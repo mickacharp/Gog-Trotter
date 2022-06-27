@@ -1,0 +1,7 @@
+{
+  "name": "gog-trotter",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
