@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  NgZone,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 
 @Component({
@@ -7,7 +13,7 @@ import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
   styleUrls: ['./explore-container.component.scss'],
 })
 export class ExploreContainerComponent implements OnInit {
-  constructor() {}
+  constructor(private ngZone: NgZone) {}
 
   title = 'angular-google-maps-app';
 
@@ -15,6 +21,8 @@ export class ExploreContainerComponent implements OnInit {
   map!: GoogleMap;
   @ViewChild(MapInfoWindow)
   info!: MapInfoWindow;
+  @ViewChild('search')
+  searchElementRef!: ElementRef;
 
   zoom: number = 12;
   maxZoom: number = 15;
@@ -30,6 +38,40 @@ export class ExploreContainerComponent implements OnInit {
   };
   markers: any[] = [];
   infoContent: string = '';
+  latitude!: any;
+  longitude!: any;
+
+  ngAfterViewInit(): void {
+    // Binding autocomplete to search input control
+    let autocomplete = new google.maps.places.Autocomplete(
+      this.searchElementRef.nativeElement
+    );
+    // Align search box to center
+    // this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(
+    //   this.searchElementRef.nativeElement
+    // );
+    autocomplete.addListener('place_changed', () => {
+      this.ngZone.run(() => {
+        //get the place result
+        let place: google.maps.places.PlaceResult = autocomplete.getPlace();
+
+        //verify result
+        if (place.geometry === undefined || place.geometry === null) {
+          return;
+        }
+
+        console.log({ place }, place.geometry.location?.lat());
+
+        //set latitude, longitude and zoom
+        this.latitude = place.geometry.location?.lat();
+        this.longitude = place.geometry.location?.lng();
+        this.center = {
+          lat: this.latitude,
+          lng: this.longitude,
+        };
+      });
+    });
+  }
 
   ngOnInit() {
     navigator.geolocation.getCurrentPosition((position) => {

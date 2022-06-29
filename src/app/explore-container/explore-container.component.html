@@ -28,3 +28,15 @@
 </google-map>
 
 <button (click)="logCenter()">Log center</button>
+
+<div>
+  <label>Enter address</label>
+  <input
+    #search
+    type="text"
+    class="my-search-box"
+    (keydown.enter)="$event.preventDefault()"
+    placeholder="Search Location"
+    type="text"
+  />
+</div>
