@@ -25,7 +25,7 @@ export class ExploreContainerComponent implements OnInit {
   searchElementRef!: ElementRef;
 
   zoom: number = 12;
-  maxZoom: number = 15;
+  maxZoom: number = 20;
   minZoom: number = 8;
   center!: google.maps.LatLngLiteral;
   options: google.maps.MapOptions = {
@@ -44,7 +44,8 @@ export class ExploreContainerComponent implements OnInit {
   ngAfterViewInit(): void {
     // Binding autocomplete to search input control
     let autocomplete = new google.maps.places.Autocomplete(
-      this.searchElementRef.nativeElement
+      this.searchElementRef.nativeElement,
+      { types: ['restaurant'] }
     );
     // Align search box to center
     // this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(
@@ -60,7 +61,7 @@ export class ExploreContainerComponent implements OnInit {
           return;
         }
 
-        console.log({ place }, place.geometry.location?.lat());
+        console.log({ place });
 
         //set latitude, longitude and zoom
         this.latitude = place.geometry.location?.lat();
