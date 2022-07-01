@@ -46,7 +46,12 @@ export class Tab1Page implements OnInit {
     // Binding autocomplete to search input control
     let autocomplete = new google.maps.places.Autocomplete(
       this.searchElementRef.nativeElement,
-      { types: ['restaurant'] }
+      {
+        types: ['restaurant'],
+        fields: ['address_components', 'geometry'],
+        componentRestrictions: { country: ['fr', 'be', 'ch', 'lu'] },
+        // location boundaries to add!!!!
+      }
     );
     // Align search box to center
     // this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(
