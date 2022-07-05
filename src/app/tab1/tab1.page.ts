@@ -21,6 +21,14 @@ export class Tab1Page implements OnInit {
   infoWindow!: MapInfoWindow;
   @ViewChild('search')
   searchElementRef!: ElementRef;
+  @ViewChild('addressInput')
+  addressInput!: HTMLInputElement;
+  @ViewChild('cityInput')
+  cityInput!: HTMLInputElement;
+  @ViewChild('postalCodeInput')
+  postalCodeInput!: HTMLInputElement;
+  @ViewChild('countryInput')
+  countryInput!: HTMLInputElement;
 
   zoom: number = 12;
   latitude!: number;
@@ -60,10 +68,10 @@ export class Tab1Page implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.initiateAutocompleteProcess();
+    this.setAutocompleteWidget();
   }
 
-  initiateAutocompleteProcess() {
+  setAutocompleteWidget() {
     // Binding autocomplete to search input element
     let autocomplete = new google.maps.places.Autocomplete(
       this.searchElementRef.nativeElement,
@@ -94,6 +102,7 @@ export class Tab1Page implements OnInit {
     this.displayMarkerOfPlaceResult(place);
     this.setContentOfInfoWindow(place);
     this.centerAndZoomMapToPlaceResult(place);
+    this.fillInAddressForm(place);
   }
 
   displayMarkerOfPlaceResult(place: google.maps.places.PlaceResult) {
@@ -125,6 +134,41 @@ export class Tab1Page implements OnInit {
       lng: this.longitude,
     };
     this.zoom = 15;
+  }
+
+  fillInAddressForm(place: google.maps.places.PlaceResult) {
+    let address = '';
+
+    for (const component of place.address_components as google.maps.GeocoderAddressComponent[]) {
+      const componentType = component.types[0];
+
+      switch (componentType) {
+        case 'street_number': {
+          address = component.long_name;
+          break;
+        }
+
+        case 'route': {
+          address += ` ${component.long_name}`;
+          break;
+        }
+
+        case 'postal_code': {
+          this.postalCodeInput.value = component.long_name;
+          break;
+        }
+
+        case 'locality':
+          this.cityInput.value = component.long_name;
+          break;
+
+        case 'country': {
+          this.countryInput.value = component.long_name;
+          break;
+        }
+      }
+    }
+    this.addressInput.value = address;
   }
 
   openInfoWindowAfterClickOnMarker(marker: MapMarker) {
