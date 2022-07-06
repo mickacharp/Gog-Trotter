@@ -27,7 +27,7 @@
       [position]="marker.position"
       [title]="marker.title"
       [options]="marker.options"
-      (mapClick)="openInfoWindowAfterClickOnMarker(markerElem)"
+      (mapClick)="setContentOfInfoWindow(marker.infoWindowContent); openInfoWindowAfterClickOnMarker(markerElem)"
     >
     </map-marker>
 
