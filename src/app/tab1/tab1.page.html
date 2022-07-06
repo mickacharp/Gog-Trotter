@@ -46,26 +46,22 @@
     />
   </div>
 
-  <div *ngIf="placeResultInfos">
+  <div>
     <ion-item>
-      <ion-label>
-        {{ placeResultInfos.address_components[0].long_name }}
-      </ion-label>
+      <ion-label position="floating"> Adresse </ion-label>
+      <ion-input clearInput #addressInput></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>
-        {{ placeResultInfos.address_components[1].long_name }}
-      </ion-label>
+      <ion-label position="floating"> Ville </ion-label>
+      <ion-input clearInput #cityInput></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>
-        {{ placeResultInfos.address_components[6].long_name }}
-      </ion-label>
+      <ion-label position="floating"> Code postal </ion-label>
+      <ion-input clearInput #postalCodeInput></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>
-        {{ placeResultInfos.address_components[2].long_name }}
-      </ion-label>
+      <ion-label position="floating"> Pays </ion-label>
+      <ion-input clearInput #countryInput></ion-input>
     </ion-item>
   </div>
 </ion-content>
