@@ -13,36 +13,43 @@
     </ion-toolbar>
   </ion-header>
 
-  <google-map
-    #myGoogleMap
-    height="500px"
-    width="100%"
-    [zoom]="zoom"
-    [center]="center"
-    [options]="mapOptions"
-  >
-    <map-marker
-      #markerElem="mapMarker"
-      *ngFor="let marker of markers"
-      [position]="marker.position"
-      [title]="marker.title"
-      [options]="marker.options"
-      (mapClick)="setContentOfInfoWindow(marker.infoWindowContent); openInfoWindowAfterClickOnMarker(markerElem)"
-    >
-    </map-marker>
+  <p>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum totam alias
+    inventore iure repellat, harum est rem quo enim perferendis laboriosam
+    perspiciatis temporibus tempora. Dolore distinctio harum minima error amet.
+  </p>
 
-    <map-info-window [options]="infoWindowOptions"></map-info-window>
-  </google-map>
-
-  <div class="input-test">
-    <label>Entrez une adresse : </label>
+  <h2>Rechercher</h2>
+  <div class="find__input-container">
     <input
       #search
       type="text"
-      class="my-search-box"
       (keydown.enter)="$event.preventDefault()"
       placeholder="ex: HFC"
-      type="text"
     />
+  </div>
+
+  <h2>Sur la carte</h2>
+  <div class="find__map-container">
+    <google-map
+      #myGoogleMap
+      height="100%"
+      width="100%"
+      [zoom]="zoom"
+      [center]="center"
+      [options]="mapOptions"
+    >
+      <map-marker
+        #markerElem="mapMarker"
+        *ngFor="let marker of markers"
+        [position]="marker.position"
+        [title]="marker.title"
+        [options]="marker.options"
+        (mapClick)="setContentOfInfoWindow(marker.infoWindowContent); openInfoWindowAfterClickOnMarker(markerElem)"
+      >
+      </map-marker>
+
+      <map-info-window [options]="infoWindowOptions"></map-info-window>
+    </google-map>
   </div>
 </ion-content>
