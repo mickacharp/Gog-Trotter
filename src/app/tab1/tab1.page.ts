@@ -43,6 +43,12 @@ export class Tab1Page implements OnInit {
     maxZoom: 20,
     minZoom: 8,
   };
+  autocompleteOptions: google.maps.places.AutocompleteOptions = {
+    types: ['restaurant'],
+    fields: ['address_components', 'geometry'],
+    componentRestrictions: { country: ['fr', 'be', 'ch', 'lu'] },
+    // TO DO: add location boundaries
+  };
   infoWindowOptions: google.maps.InfoWindowOptions = {};
 
   placeResultInfos: google.maps.places.PlaceResult;
@@ -62,76 +68,59 @@ export class Tab1Page implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.setSearchBoxWidget();
+    this.setAutocompleteWidget();
   }
 
-  setSearchBoxWidget() {
-    // Binding searchbox to search input element
-    let searchbox = new google.maps.places.SearchBox(
-      this.searchElementRef.nativeElement
-      // {bounds: TO DO}
+  setAutocompleteWidget() {
+    // Binding autocomplete to search input element
+    let autocomplete = new google.maps.places.Autocomplete(
+      this.searchElementRef.nativeElement,
+      this.autocompleteOptions
     );
-    this.getPlacesResults(searchbox);
+    this.getPlaceResult(autocomplete);
   }
 
-  getPlacesResults(searchbox: google.maps.places.SearchBox) {
-    searchbox.addListener('places_changed', () => {
+  getPlaceResult(autocomplete: google.maps.places.Autocomplete) {
+    autocomplete.addListener('place_changed', () => {
       this.ngZone.run(() => {
-        // Get the places results
-        let places: google.maps.places.PlaceResult[] = searchbox.getPlaces();
+        // Get the place result
+        let place: google.maps.places.PlaceResult = autocomplete.getPlace();
 
-        // Verify results
-        if (places.length == 0) {
+        // Verify result
+        if (place.geometry === undefined || place.geometry === null) {
           return;
         }
 
-        // Clear out the old markers.
-        this.markers.length = 0;
-
-        // For each place, get the icon, name and location.
-        const bounds = new google.maps.LatLngBounds();
-
-        places.forEach((place) => {
-          if (!place.geometry || !place.geometry.location) {
-            console.log('Returned place contains no geometry');
-            return;
-          }
-
-          const icon = {
-            url: place.icon as string,
-            size: new google.maps.Size(71, 71),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(17, 34),
-            scaledSize: new google.maps.Size(25, 25),
-          };
-
-          // Create a marker for each place.
-          this.markers.push({
-            map: this.map,
-            icon: icon,
-            title: place.name,
-            position: place.geometry.location,
-            infoWindowContent: place.formatted_address,
-          });
-
-          if (place.geometry.viewport) {
-            // Only geocodes have viewport.
-            bounds.union(place.geometry.viewport);
-          } else {
-            bounds.extend(place.geometry.location);
-          }
-          console.log(place);
-        });
-        this.map.fitBounds(bounds);
+        this.getInfosAndNavigateToPlaceResult(place);
       });
     });
   }
 
-  setContentOfInfoWindow(infoWindowContent: any) {
+  getInfosAndNavigateToPlaceResult(place: google.maps.places.PlaceResult) {
+    console.log({ place });
+    this.placeResultInfos = place;
+    this.displayMarkerOfPlaceResult(place);
+    this.setContentOfInfoWindow(place);
+    this.centerAndZoomMapToPlaceResult(place);
+    this.fillInAddressForm(place);
+  }
+
+  displayMarkerOfPlaceResult(place: google.maps.places.PlaceResult) {
+    this.markers.length = 0;
+    this.markers.push({
+      position: {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+      },
+    });
+  }
+
+  setContentOfInfoWindow(place: google.maps.places.PlaceResult) {
+    const cityOfPlaceResult: string = place.address_components[2].long_name;
     const contentToDisplayInInfoWindow = {
       content: `<div style="width: 100%; height:100%; background-color: #FF6666">
           <h1 style="color: white">Coucou</h1>
-          <p style="color: white">${infoWindowContent}</p>
+          <p style="color: white">${cityOfPlaceResult}</p>
         </div>`,
     };
     this.infoWindowOptions = contentToDisplayInInfoWindow;
