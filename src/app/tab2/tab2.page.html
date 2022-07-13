@@ -29,6 +29,25 @@
     />
   </div>
 
+  <!-- TO DO: Replace with *ngFor -->
+  <div class="find__chips">
+    <ion-chip (click)="searchRestaurantTypeFromChip('Pizza')">
+      <ion-label>Pizza</ion-label>
+    </ion-chip>
+    <ion-chip (click)="searchRestaurantTypeFromChip('Sushi')">
+      <ion-label>Sushi</ion-label>
+    </ion-chip>
+    <ion-chip (click)="searchRestaurantTypeFromChip('Italien')">
+      <ion-label>Italien</ion-label>
+    </ion-chip>
+    <ion-chip (click)="searchRestaurantTypeFromChip('Vietnamien')">
+      <ion-label>Vietnamien</ion-label>
+    </ion-chip>
+    <ion-chip (click)="searchRestaurantTypeFromChip('Tacos')">
+      <ion-label>Tacos</ion-label>
+    </ion-chip>
+  </div>
+
   <h2>Sur la carte</h2>
   <div class="find__map-container">
     <google-map

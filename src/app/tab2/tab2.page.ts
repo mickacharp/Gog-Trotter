@@ -131,4 +131,20 @@ export class Tab2Page implements OnInit {
   openInfoWindowAfterClickOnMarker(marker: MapMarker) {
     this.infoWindow.open(marker);
   }
+
+  searchRestaurantTypeFromChip(restaurantType: string) {
+    const searchInput = this.searchElementRef.nativeElement as HTMLInputElement;
+    searchInput.value = restaurantType;
+    this.focusInputAndPressEnter(searchInput);
+  }
+
+  focusInputAndPressEnter(input: HTMLInputElement) {
+    const pressEnterEvent = new KeyboardEvent('keydown', {
+      bubbles: true,
+      keyCode: 13,
+    });
+    input.focus();
+    input.dispatchEvent(pressEnterEvent);
+    input.blur();
+  }
 }
