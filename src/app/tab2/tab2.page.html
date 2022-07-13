@@ -37,7 +37,7 @@
     <ion-chip (click)="searchRestaurantTypeFromChip('Sushi')">
       <ion-label>Sushi</ion-label>
     </ion-chip>
-    <ion-chip (click)="searchRestaurantTypeFromChip('Italien')">
+    <ion-chip (click)="searchRestaurantTypeFromChip('Restaurant italien')">
       <ion-label>Italien</ion-label>
     </ion-chip>
     <ion-chip (click)="searchRestaurantTypeFromChip('Vietnamien')">
@@ -71,4 +71,18 @@
       <map-info-window [options]="infoWindowOptions"></map-info-window>
     </google-map>
   </div>
+  <ion-list *ngIf="searchboxResults">
+    <ion-item *ngFor="let place of searchboxResults | slice:0:5">
+      <ion-thumbnail slot="start">
+        <ion-img
+          src="{{place.photos ? place.photos[0].getUrl({'maxWidth': 200, 'maxHeight': 200}) : 'https://www.mjc-castanet-tolosan.fr/wp-content/uploads/2016/06/Pas-dimage-disponible1-e1466657277567.jpg'}}"
+        ></ion-img>
+      </ion-thumbnail>
+      <ion-label>
+        <h1>{{place.name | uppercase}}</h1>
+        <h2>{{place.formatted_address}}</h2>
+        <h3>Note : {{place.rating}} / 5</h3>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>

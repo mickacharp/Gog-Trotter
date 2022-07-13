@@ -38,6 +38,7 @@ export class Tab2Page implements OnInit {
   infoWindowOptions: google.maps.InfoWindowOptions = {};
 
   markers: any[] = []; // TO DO: replace the any
+  searchboxResults: google.maps.places.PlaceResult[] = [];
 
   ngOnInit() {
     this.getCurrentPositionOfUser();
@@ -76,7 +77,8 @@ export class Tab2Page implements OnInit {
           return;
         }
 
-        // Clear out the old markers.
+        // Clear out the previous results & markers.
+        this.searchboxResults.length = 0;
         this.markers.length = 0;
 
         // For each place, get the icon, name and location.
@@ -112,6 +114,7 @@ export class Tab2Page implements OnInit {
             bounds.extend(place.geometry.location);
           }
           console.log(place);
+          this.searchboxResults.push(place);
         });
         this.map.fitBounds(bounds);
       });
