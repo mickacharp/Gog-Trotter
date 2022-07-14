@@ -48,36 +48,37 @@
 
   <div>
     <ion-item>
-      <ion-label position="floating"> Adresse </ion-label>
+      <ion-label position="floating"> Nom de votre restaurant* </ion-label>
+      <ion-input clearInput #restaurantNameInput></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating"> Adresse* </ion-label>
       <ion-input clearInput #addressInput></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="floating"> Ville </ion-label>
+      <ion-label position="floating"> Ville* </ion-label>
       <ion-input clearInput #cityInput></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="floating"> Code postal </ion-label>
+      <ion-label position="floating"> Code postal* </ion-label>
       <ion-input clearInput #postalCodeInput></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="floating"> Pays </ion-label>
+      <ion-label position="floating"> Pays* </ion-label>
       <ion-input clearInput #countryInput></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="floating"> Téléphone </ion-label>
+      <ion-label position="floating"> Téléphone* </ion-label>
       <ion-input clearInput #phoneInput></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="floating"> Nom de votre restaurant </ion-label>
-      <ion-input clearInput #restaurantNameInput></ion-input>
+      <ion-label position="floating"> Email* </ion-label>
+      <ion-input clearInput #emailInput></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="floating"> Site web </ion-label>
       <ion-input clearInput #websiteInput></ion-input>
     </ion-item>
-    <ion-item>
-      <ion-label position="floating"> Email </ion-label>
-      <ion-input clearInput></ion-input>
-    </ion-item>
   </div>
+  <ion-button (click)="saveRestaurantUserInDatabase()">S'inscrire !</ion-button>
 </ion-content>

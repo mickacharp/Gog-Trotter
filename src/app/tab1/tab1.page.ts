@@ -6,6 +6,9 @@ import {
   ViewChild,
 } from '@angular/core';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { RestaurantUser } from '../models/restaurant-user';
+import { Address } from '../models/address';
 
 @Component({
   selector: 'app-tab1',
@@ -13,7 +16,7 @@ import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
   styleUrls: ['tab1.page.scss'],
 })
 export class Tab1Page implements OnInit {
-  constructor(private ngZone: NgZone) {}
+  constructor(private ngZone: NgZone, private afs: AngularFirestore) {}
 
   @ViewChild('myGoogleMap')
   map!: GoogleMap;
@@ -35,6 +38,8 @@ export class Tab1Page implements OnInit {
   restaurantNameInput!: HTMLInputElement;
   @ViewChild('websiteInput')
   websiteInput!: HTMLInputElement;
+  @ViewChild('emailInput')
+  emailInput!: HTMLInputElement;
 
   zoom: number = 12;
   latitude!: number;
@@ -66,6 +71,30 @@ export class Tab1Page implements OnInit {
 
   placeResultInfos: google.maps.places.PlaceResult;
   markers: any[] = []; // TO DO: replace the any
+
+  restaurantPlaceId: string = '';
+
+  saveRestaurantUserInDatabase(): void {
+    const newRestaurantUser: RestaurantUser = new RestaurantUser(
+      this.afs.createId(),
+      this.restaurantNameInput.value,
+      new Address(
+        this.addressInput.value,
+        this.cityInput.value,
+        this.postalCodeInput.value,
+        this.countryInput.value
+      ),
+      this.emailInput.value,
+      this.phoneInput.value,
+      this.restaurantPlaceId,
+      this.websiteInput.value
+    );
+
+    this.afs
+      .collection<RestaurantUser>('restaurant-users')
+      .doc(newRestaurantUser.restaurantId) // sets the Firebase ID to newRestaurantUser.restaurantId value (restaurantId being generated with this.afs.createId() method)
+      .set(JSON.parse(JSON.stringify(newRestaurantUser))); // we need to JSON the file before pushing it to Firebase
+  }
 
   ngOnInit() {
     this.getCurrentPositionOfUser();
@@ -112,6 +141,7 @@ export class Tab1Page implements OnInit {
   getInfosAndNavigateToPlaceResult(place: google.maps.places.PlaceResult) {
     console.log({ place });
     this.placeResultInfos = place;
+    this.restaurantPlaceId = place.place_id;
     this.displayMarkerOfPlaceResult(place);
     this.setContentOfInfoWindow(place);
     this.centerAndZoomMapToPlaceResult(place);
