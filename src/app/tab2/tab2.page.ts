@@ -5,7 +5,11 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { RestaurantUser } from '../models/restaurant-user';
 
 @Component({
   selector: 'app-tab2',
@@ -13,7 +17,7 @@ import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
   styleUrls: ['tab2.page.scss'],
 })
 export class Tab2Page implements OnInit {
-  constructor(private ngZone: NgZone) {}
+  constructor(private ngZone: NgZone, private afs: AngularFirestore) {}
 
   @ViewChild('myGoogleMap')
   map!: GoogleMap;
@@ -38,7 +42,36 @@ export class Tab2Page implements OnInit {
   infoWindowOptions: google.maps.InfoWindowOptions = {};
 
   markers: any[] = []; // TO DO: replace the any
-  searchboxResults: google.maps.places.PlaceResult[] = [];
+  searchboxResults: any[] = []; // TO DO: replace the any
+
+  checkIfRestaurantOfSearchboxResultsIsSignedUp() {
+    for (let i = 0; i < this.searchboxResults.length; i++) {
+      this.getRestaurantByPlaceId(this.searchboxResults[i].place_id).subscribe(
+        (restaurant) => {
+          if (restaurant[0]) {
+            this.searchboxResults[i].isSignedUp = true;
+          }
+        }
+      );
+    }
+  }
+
+  getRestaurantByPlaceId(placeId: string): Observable<RestaurantUser[]> {
+    return this.afs
+      .collection<RestaurantUser>('restaurant-users', (ref) =>
+        ref.where('placeId', '==', placeId)
+      )
+      .snapshotChanges()
+      .pipe(
+        map((changes) =>
+          changes.map((c) => {
+            const data = c.payload.doc.data() as RestaurantUser;
+            const id = c.payload.doc.id;
+            return { id, ...data };
+          })
+        )
+      );
+  }
 
   ngOnInit() {
     this.getCurrentPositionOfUser();
@@ -116,6 +149,7 @@ export class Tab2Page implements OnInit {
           console.log(place);
           this.searchboxResults.push(place);
         });
+        this.checkIfRestaurantOfSearchboxResultsIsSignedUp();
         this.map.fitBounds(bounds);
       });
     });

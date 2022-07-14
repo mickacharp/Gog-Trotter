@@ -90,6 +90,15 @@
             <h2>{{place.name | uppercase}}</h2>
             <h3>{{place.formatted_address}}</h3>
             <p>Note : {{place.rating}} / 5</p>
+            <ion-button *ngIf="place.isSignedUp === true"
+              >Accéder au profil</ion-button
+            >
+            <p
+              *ngIf="place.name === 'HFC'"
+              style="font-weight: bold; color: white"
+            >
+              Cet établissement a demandé un audit !
+            </p>
           </ion-label>
         </ion-item>
       </ion-list>
