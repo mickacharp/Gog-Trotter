@@ -5,7 +5,11 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { RestaurantUser } from '../models/restaurant-user';
 
 @Component({
   selector: 'app-tab2',
@@ -13,7 +17,7 @@ import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
   styleUrls: ['tab2.page.scss'],
 })
 export class Tab2Page implements OnInit {
-  constructor(private ngZone: NgZone) {}
+  constructor(private ngZone: NgZone, private afs: AngularFirestore) {}
 
   @ViewChild('myGoogleMap')
   map!: GoogleMap;
@@ -38,6 +42,36 @@ export class Tab2Page implements OnInit {
   infoWindowOptions: google.maps.InfoWindowOptions = {};
 
   markers: any[] = []; // TO DO: replace the any
+  searchboxResults: any[] = []; // TO DO: replace the any
+
+  checkIfRestaurantOfSearchboxResultsIsSignedUp() {
+    for (let i = 0; i < this.searchboxResults.length; i++) {
+      this.getRestaurantByPlaceId(this.searchboxResults[i].place_id).subscribe(
+        (restaurant) => {
+          if (restaurant[0]) {
+            this.searchboxResults[i].isSignedUp = true;
+          }
+        }
+      );
+    }
+  }
+
+  getRestaurantByPlaceId(placeId: string): Observable<RestaurantUser[]> {
+    return this.afs
+      .collection<RestaurantUser>('restaurant-users', (ref) =>
+        ref.where('placeId', '==', placeId)
+      )
+      .snapshotChanges()
+      .pipe(
+        map((changes) =>
+          changes.map((c) => {
+            const data = c.payload.doc.data() as RestaurantUser;
+            const id = c.payload.doc.id;
+            return { id, ...data };
+          })
+        )
+      );
+  }
 
   ngOnInit() {
     this.getCurrentPositionOfUser();
@@ -76,7 +110,8 @@ export class Tab2Page implements OnInit {
           return;
         }
 
-        // Clear out the old markers.
+        // Clear out the previous results & markers.
+        this.searchboxResults.length = 0;
         this.markers.length = 0;
 
         // For each place, get the icon, name and location.
@@ -112,17 +147,19 @@ export class Tab2Page implements OnInit {
             bounds.extend(place.geometry.location);
           }
           console.log(place);
+          this.searchboxResults.push(place);
         });
+        this.checkIfRestaurantOfSearchboxResultsIsSignedUp();
         this.map.fitBounds(bounds);
       });
     });
   }
 
-  setContentOfInfoWindow(infoWindowContent: any) {
+  setContentOfInfoWindow(marker: any) {
     const contentToDisplayInInfoWindow = {
-      content: `<div style="width: 100%; height:100%; background-color: #FF6666">
-          <h1 style="color: white">Coucou</h1>
-          <p style="color: white">${infoWindowContent}</p>
+      content: `<div style="width: 100%; height:100%;">
+          <p style="color: #123456; font-weight: bold; font-size: 1.2rem;">${marker.title}</p>
+          <p style="color: #123456">${marker.infoWindowContent}</p>
         </div>`,
     };
     this.infoWindowOptions = contentToDisplayInInfoWindow;
@@ -130,5 +167,21 @@ export class Tab2Page implements OnInit {
 
   openInfoWindowAfterClickOnMarker(marker: MapMarker) {
     this.infoWindow.open(marker);
+  }
+
+  searchRestaurantTypeFromChip(restaurantType: string) {
+    const searchInput = this.searchElementRef.nativeElement as HTMLInputElement;
+    searchInput.value = restaurantType;
+    this.focusInputAndPressEnter(searchInput);
+  }
+
+  focusInputAndPressEnter(input: HTMLInputElement) {
+    const pressEnterEvent = new KeyboardEvent('keydown', {
+      bubbles: true,
+      keyCode: 13,
+    });
+    input.focus();
+    input.dispatchEvent(pressEnterEvent);
+    input.blur();
   }
 }

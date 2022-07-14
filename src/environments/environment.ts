@@ -3,7 +3,16 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  firebase: {
+    apiKey: 'AIzaSyAk0DK8FYCaMk7O8fXsujHd_Sj-4X4DtWk',
+    authDomain: 'gog-trotter.firebaseapp.com',
+    projectId: 'gog-trotter',
+    storageBucket: 'gog-trotter.appspot.com',
+    messagingSenderId: '520380883993',
+    appId: '1:520380883993:web:7961a318952dca53597688',
+    measurementId: 'G-BELHL6NBCF',
+  },
+  production: false,
 };
 
 /*

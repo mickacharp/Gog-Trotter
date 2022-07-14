@@ -1,7 +1,7 @@
 <!-- Header which displays when user scroll -->
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> Trouver un restaurant </ion-title>
+    <ion-title>S'inscrire</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -9,7 +9,7 @@
   <!-- Header which displays when user has not scrolled yet -->
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Trouver un restaurant</ion-title>
+      <ion-title size="large">S'inscrire</ion-title>
     </ion-toolbar>
   </ion-header>
 
@@ -35,33 +35,50 @@
   </google-map>
 
   <div class="input-test">
-    <label>Entrez une adresse : </label>
+    <h2>Vos coordonnées</h2>
+    <label>Trouvez votre restaurant : </label>
     <input
       #search
       type="text"
       class="my-search-box"
       (keydown.enter)="$event.preventDefault()"
-      placeholder="ex: HFC"
-      type="text"
+      placeholder="ex: Molly Malone's Bordeaux"
     />
   </div>
 
   <div>
     <ion-item>
-      <ion-label position="floating"> Adresse </ion-label>
+      <ion-label position="floating"> Nom de votre restaurant* </ion-label>
+      <ion-input clearInput #restaurantNameInput></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating"> Adresse* </ion-label>
       <ion-input clearInput #addressInput></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="floating"> Ville </ion-label>
+      <ion-label position="floating"> Ville* </ion-label>
       <ion-input clearInput #cityInput></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="floating"> Code postal </ion-label>
+      <ion-label position="floating"> Code postal* </ion-label>
       <ion-input clearInput #postalCodeInput></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label position="floating"> Pays </ion-label>
+      <ion-label position="floating"> Pays* </ion-label>
       <ion-input clearInput #countryInput></ion-input>
     </ion-item>
+    <ion-item>
+      <ion-label position="floating"> Téléphone* </ion-label>
+      <ion-input clearInput #phoneInput></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating"> Email* </ion-label>
+      <ion-input clearInput #emailInput></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating"> Site web </ion-label>
+      <ion-input clearInput #websiteInput></ion-input>
+    </ion-item>
   </div>
+  <ion-button (click)="saveRestaurantUserInDatabase()">S'inscrire !</ion-button>
 </ion-content>

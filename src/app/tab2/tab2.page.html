@@ -9,40 +9,99 @@
   <!-- Header which displays when user has not scrolled yet -->
   <ion-header collapse="condense">
     <ion-toolbar>
+      <ion-img
+        src="https://img.freepik.com/free-vector/search-concept-illustration_114360-95.jpg?w=1000"
+      ></ion-img>
       <ion-title size="large">Trouver un restaurant</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <google-map
-    #myGoogleMap
-    height="500px"
-    width="100%"
-    [zoom]="zoom"
-    [center]="center"
-    [options]="mapOptions"
-  >
-    <map-marker
-      #markerElem="mapMarker"
-      *ngFor="let marker of markers"
-      [position]="marker.position"
-      [title]="marker.title"
-      [options]="marker.options"
-      (mapClick)="setContentOfInfoWindow(marker.infoWindowContent); openInfoWindowAfterClickOnMarker(markerElem)"
-    >
-    </map-marker>
+  <div class="find">
+    <p class="find__description">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum totam alias
+      inventore iure repellat, harum est rem quo enim perferendis laboriosam
+      perspiciatis temporibus tempora. Dolore distinctio harum minima error
+      amet.
+    </p>
 
-    <map-info-window [options]="infoWindowOptions"></map-info-window>
-  </google-map>
+    <h2>Rechercher</h2>
+    <div class="find__input-container">
+      <input
+        #search
+        type="text"
+        (keydown.enter)="$event.preventDefault()"
+        placeholder="ex: HFC"
+      />
+    </div>
 
-  <div class="input-test">
-    <label>Entrez une adresse : </label>
-    <input
-      #search
-      type="text"
-      class="my-search-box"
-      (keydown.enter)="$event.preventDefault()"
-      placeholder="ex: HFC"
-      type="text"
-    />
+    <!-- TO DO: Replace with *ngFor -->
+    <div class="find__chips">
+      <ion-chip (click)="searchRestaurantTypeFromChip('Pizza')">
+        <ion-label>Pizza</ion-label>
+      </ion-chip>
+      <ion-chip (click)="searchRestaurantTypeFromChip('Sushi')">
+        <ion-label>Sushi</ion-label>
+      </ion-chip>
+      <ion-chip (click)="searchRestaurantTypeFromChip('Restaurant italien')">
+        <ion-label>Italien</ion-label>
+      </ion-chip>
+      <ion-chip (click)="searchRestaurantTypeFromChip('Vietnamien')">
+        <ion-label>Vietnamien</ion-label>
+      </ion-chip>
+      <ion-chip (click)="searchRestaurantTypeFromChip('Tacos')">
+        <ion-label>Tacos</ion-label>
+      </ion-chip>
+    </div>
+
+    <h2>Sur la carte</h2>
+    <div class="find__map-container">
+      <google-map
+        #myGoogleMap
+        height="100%"
+        width="100%"
+        [zoom]="zoom"
+        [center]="center"
+        [options]="mapOptions"
+      >
+        <map-marker
+          #markerElem="mapMarker"
+          *ngFor="let marker of markers"
+          [position]="marker.position"
+          [title]="marker.title"
+          [options]="marker.options"
+          (mapClick)="setContentOfInfoWindow(marker); openInfoWindowAfterClickOnMarker(markerElem)"
+        >
+        </map-marker>
+
+        <map-info-window [options]="infoWindowOptions"></map-info-window>
+      </google-map>
+    </div>
+
+    <div *ngIf="searchboxResults.length">
+      <h2>Résultats de votre recherche</h2>
+      <ion-list>
+        <ion-item *ngFor="let place of searchboxResults | slice:0:5">
+          <ion-thumbnail slot="start">
+            <ion-img
+              src="{{place.photos ? place.photos[0].getUrl({'maxWidth': 200, 'maxHeight': 200}) : 'https://www.mjc-castanet-tolosan.fr/wp-content/uploads/2016/06/Pas-dimage-disponible1-e1466657277567.jpg'}}"
+            ></ion-img>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>{{place.name | uppercase}}</h2>
+            <h3>{{place.formatted_address}}</h3>
+            <p>Note : {{place.rating}} / 5</p>
+            <ion-button *ngIf="place.isSignedUp === true"
+              >Accéder au profil</ion-button
+            >
+            <p
+              *ngIf="place.name === 'HFC'"
+              style="font-weight: bold; color: white"
+            >
+              Cet établissement a demandé un audit !
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </div>
   </div>
 </ion-content>
