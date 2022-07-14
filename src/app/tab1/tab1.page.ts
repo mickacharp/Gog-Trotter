@@ -29,6 +29,12 @@ export class Tab1Page implements OnInit {
   postalCodeInput!: HTMLInputElement;
   @ViewChild('countryInput')
   countryInput!: HTMLInputElement;
+  @ViewChild('phoneInput')
+  phoneInput!: HTMLInputElement;
+  @ViewChild('restaurantNameInput')
+  restaurantNameInput!: HTMLInputElement;
+  @ViewChild('websiteInput')
+  websiteInput!: HTMLInputElement;
 
   zoom: number = 12;
   latitude!: number;
@@ -45,7 +51,14 @@ export class Tab1Page implements OnInit {
   };
   autocompleteOptions: google.maps.places.AutocompleteOptions = {
     types: ['restaurant'],
-    fields: ['address_components', 'geometry'],
+    fields: [
+      'address_components',
+      'formatted_phone_number',
+      'name',
+      'place_id',
+      'website',
+      'geometry',
+    ],
     componentRestrictions: { country: ['fr', 'be', 'ch', 'lu'] },
     // TO DO: add location boundaries
   };
@@ -102,7 +115,7 @@ export class Tab1Page implements OnInit {
     this.displayMarkerOfPlaceResult(place);
     this.setContentOfInfoWindow(place);
     this.centerAndZoomMapToPlaceResult(place);
-    this.fillInAddressForm(place);
+    this.fillInRestaurantForm(place);
   }
 
   displayMarkerOfPlaceResult(place: google.maps.places.PlaceResult) {
@@ -136,7 +149,7 @@ export class Tab1Page implements OnInit {
     this.zoom = 15;
   }
 
-  fillInAddressForm(place: google.maps.places.PlaceResult) {
+  fillInRestaurantForm(place: google.maps.places.PlaceResult) {
     let address = '';
 
     for (const component of place.address_components as google.maps.GeocoderAddressComponent[]) {
@@ -169,6 +182,9 @@ export class Tab1Page implements OnInit {
       }
     }
     this.addressInput.value = address;
+    this.phoneInput.value = place.formatted_phone_number;
+    this.restaurantNameInput.value = place.name;
+    this.websiteInput.value = place.website;
   }
 
   openInfoWindowAfterClickOnMarker(marker: MapMarker) {
