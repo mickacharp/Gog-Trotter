@@ -121,11 +121,11 @@ export class Tab2Page implements OnInit {
     });
   }
 
-  setContentOfInfoWindow(infoWindowContent: any) {
+  setContentOfInfoWindow(marker: any) {
     const contentToDisplayInInfoWindow = {
-      content: `<div style="width: 100%; height:100%; background-color: #FF6666">
-          <h1 style="color: white">Coucou</h1>
-          <p style="color: white">${infoWindowContent}</p>
+      content: `<div style="width: 100%; height:100%;">
+          <p style="color: #123456; font-weight: bold; font-size: 1.2rem;">${marker.title}</p>
+          <p style="color: #123456">${marker.infoWindowContent}</p>
         </div>`,
     };
     this.infoWindowOptions = contentToDisplayInInfoWindow;
