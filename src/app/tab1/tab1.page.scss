@@ -1,20 +1,42 @@
-.my-search-box {
-    align-self: center;
-    font-size: 1rem;
-    font-weight: 400;
-    color: #212529;
-    width: 40vw;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
-    padding: 10px 5px;
-    border-radius: 15px;
-}
-
-ion-item {
+.sign-up {
     width: 80vw;
-}
+    margin: auto;
 
-.input-test {
-    margin-top: 50px;
+    &__input {
+        display: flex;
+        flex-direction: column;
+        margin: 1rem 0;
+
+        input {
+            align-self: center;
+            font-size: 1rem;
+            font-weight: 400;
+            color: #123456;
+            width: 100%;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ff6666;
+            padding: 10px 5px;
+            margin-top: .5rem;
+            border-radius: 15px;
+        }
+    }
+
+    &__form-container {
+        width: 100%;
+
+        ion-item {
+            width: 100%;
+        }
+
+        button {
+            border: 1px solid #ff6666;
+            border-radius: 15px;
+            background-color: #fff;
+            color: #ff6666;
+            padding: 10px 5px;
+            width: 30vw;
+            margin: .5rem 0;
+        }
+    }
 }
